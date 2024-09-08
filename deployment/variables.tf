@@ -53,39 +53,39 @@ variable "routes" {
       connect_timeout_in_seconds = optional(number)
       function_id                = optional(string)
       headers = optional(object({
-	name  = string
-	value = string
+        name  = string
+        value = string
       }))
       is_ssl_verify_disabled  = optional(bool)
       post_logout_state       = optional(string)
       read_timeout_in_seconds = optional(number)
       routing_backends = optional(object({
-	backend = object({
-	  body                       = optional(string)
-	  connect_timeout_in_seconds = optional(number)
-	  function_id                = optional(string)
-	  headers = object({
-	    name  = string
-	    value = string
-	  })
-	  is_ssl_verify_disabled  = optional(bool)
-	  read_timeout_in_seconds = optional(number)
-	  send_timeout_in_seconds = optional(number)
-	  status                  = optional(string)
-	  type                    = optional(string)
-	  url                     = optional(string)
-	})
-	key = object({
-	  expression = string
-	  is_default = optional(bool)
-	  name       = string
-	  type       = string
-	  values     = string
-	})
+        backend = object({
+          body                       = optional(string)
+          connect_timeout_in_seconds = optional(number)
+          function_id                = optional(string)
+          headers = object({
+            name  = string
+            value = string
+          })
+          is_ssl_verify_disabled  = optional(bool)
+          read_timeout_in_seconds = optional(number)
+          send_timeout_in_seconds = optional(number)
+          status                  = optional(string)
+          type                    = optional(string)
+          url                     = optional(string)
+        })
+        key = object({
+          expression = string
+          is_default = optional(bool)
+          name       = string
+          type       = string
+          values     = string
+        })
       }))
       selection_source = optional(object({
-	selector = string
-	type     = string
+        selector = string
+        type     = string
       }))
       send_timeout_in_seconds = optional(number)
       status                  = optional(string)
@@ -94,124 +94,124 @@ variable "routes" {
     })
     logging_policies = optional(object({
       access_log = optional(object({
-	is_enabled = optional(bool)
+        is_enabled = optional(bool)
       }))
       execution_log = optional(object({
-	is_enabled = optional(bool)
-	log_level  = optional(bool)
+        is_enabled = optional(bool)
+        log_level  = optional(bool)
       }))
     }))
     methods = optional(list(string))
     path    = string
     request_policies = optional(object({
       authorization = optional(object({
-	allowed_scope = string
-	type          = optional(string)
+        allowed_scope = string
+        type          = optional(string)
       }))
       body_validation = optional(object({
-	content = optional(object({
-	  media_type      = string
-	  validation_type = string
-	}))
-	required        = optional(bool)
-	validation_mode = optional(string)
+        content = optional(object({
+          media_type      = string
+          validation_type = string
+        }))
+        required        = optional(bool)
+        validation_mode = optional(string)
       }))
       cors = optional(object({
-	allowed_headers              = optional(list(string))
-	allowed_methods              = optional(list(string))
-	allowed_origins              = list(string)
-	exposed_headers              = optional(list(string))
-	is_allow_credentials_enabled = optional(bool)
-	max_age_in_seconds           = optional(number)
+        allowed_headers              = optional(list(string))
+        allowed_methods              = optional(list(string))
+        allowed_origins              = list(string)
+        exposed_headers              = optional(list(string))
+        is_allow_credentials_enabled = optional(bool)
+        max_age_in_seconds           = optional(number)
       }))
       header_transformations = optional(object({
-	filter_headers = optional(object({
-	  items = object({
-	    name = string
-	  })
-	  type = string
-	}))
-	rename_headers = optional(object({
-	  items = object({
-	    from = string
-	    to   = string
-	  })
-	}))
-	set_headers = optional(object({
-	  items = object({
-	    if_exists = optional(bool)
-	    name      = string
-	    values    = list(string)
-	  })
-	}))
+        filter_headers = optional(object({
+          items = object({
+            name = string
+          })
+          type = string
+        }))
+        rename_headers = optional(object({
+          items = object({
+            from = string
+            to   = string
+          })
+        }))
+        set_headers = optional(object({
+          items = object({
+            if_exists = optional(bool)
+            name      = string
+            values    = list(string)
+          })
+        }))
       }))
       header_validations = optional(object({
-	headers = optional(object({
-	  name     = string
-	  required = optional(bool)
-	}))
-	validation_mode = optional(string)
+        headers = optional(object({
+          name     = string
+          required = optional(bool)
+        }))
+        validation_mode = optional(string)
       }))
       query_parameter_transformations = optional(object({
-	filter_query_parameters = optional(object({
-	  items = object({
-	    name = string
-	  })
-	  type = string
-	}))
-	rename_query_parameters = optional(object({
-	  items = object({
-	    from = string
-	    to   = string
-	  })
-	}))
-	set_query_parameters = optional(object({
-	  items = object({
-	    if_exists = optional(bool)
-	    name      = string
-	    values    = list(string)
-	  })
-	}))
+        filter_query_parameters = optional(object({
+          items = object({
+            name = string
+          })
+          type = string
+        }))
+        rename_query_parameters = optional(object({
+          items = object({
+            from = string
+            to   = string
+          })
+        }))
+        set_query_parameters = optional(object({
+          items = object({
+            if_exists = optional(bool)
+            name      = string
+            values    = list(string)
+          })
+        }))
       }))
       query_parameter_validations = optional(object({
-	parameters = optional(object({
-	  name     = string
-	  required = optional(bool)
-	}))
-	validation_mode = optional(string)
+        parameters = optional(object({
+          name     = string
+          required = optional(bool)
+        }))
+        validation_mode = optional(string)
       }))
       response_cache_lookup = optional(object({
-	cache_key_additions        = optional(list(string))
-	is_enabled                 = optional(bool)
-	is_private_caching_enabled = optional(bool)
-	type                       = string
+        cache_key_additions        = optional(list(string))
+        is_enabled                 = optional(bool)
+        is_private_caching_enabled = optional(bool)
+        type                       = string
       }))
     }))
     response_policies = optional(object({
       header_transformations = optional(object({
-	filter_headers = optional(object({
-	  items = object({
-	    name = string
-	  })
-	  type = string
-	}))
-	rename_headers = optional(object({
-	  items = object({
-	    from = string
-	    to   = string
-	  })
-	}))
-	set_headers = optional(object({
-	  items = object({
-	    if_exists = optional(bool)
-	    name      = string
-	    values    = list(string)
-	  })
-	}))
+        filter_headers = optional(object({
+          items = object({
+            name = string
+          })
+          type = string
+        }))
+        rename_headers = optional(object({
+          items = object({
+            from = string
+            to   = string
+          })
+        }))
+        set_headers = optional(object({
+          items = object({
+            if_exists = optional(bool)
+            name      = string
+            values    = list(string)
+          })
+        }))
       }))
       response_cache_store = optional(object({
-	time_to_live_in_seconds = number
-	type                    = string
+        time_to_live_in_seconds = number
+        type                    = string
       }))
     }))
   }))

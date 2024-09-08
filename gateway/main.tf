@@ -29,8 +29,8 @@ resource "oci_apigateway_gateway" "this" {
       read_timeout_in_ms                   = rcd.value.read_timeout_in_ms
       send_timeout_in_ms                   = rcd.value.send_timeout_in_ms
       servers {
-	host = rcd.value.servers.host
-	port = rcd.value.servers.port
+        host = rcd.value.servers.host
+        port = rcd.value.servers.port
       }
     }
   }
