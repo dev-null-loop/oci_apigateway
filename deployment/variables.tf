@@ -172,19 +172,19 @@ variable "routes" {
 	    values    = list(string)
 	  })
 	}))
-	query_parameter_validations = optional(object({
-	  parameters = optional(object({
-	    name     = string
-	    required = optional(bool)
-	  }))
-	  validation_mode = optional(string)
+      }))
+      query_parameter_validations = optional(object({
+	parameters = optional(object({
+	  name     = string
+	  required = optional(bool)
 	}))
-	response_cache_lookup = optional(object({
-	  cache_key_additions        = optional(list(string))
-	  is_enabled                 = optional(bool)
-	  is_private_caching_enabled = optional(bool)
-	  type                       = string
-	}))
+	validation_mode = optional(string)
+      }))
+      response_cache_lookup = optional(object({
+	cache_key_additions        = optional(list(string))
+	is_enabled                 = optional(bool)
+	is_private_caching_enabled = optional(bool)
+	type                       = string
       }))
     }))
     response_policies = optional(object({

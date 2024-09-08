@@ -1,5 +1,8 @@
 resource "oci_apigateway_deployment" "this" {
   compartment_id = var.compartment_id
+  defined_tags   = var.defined_tags
+  display_name   = var.display_name
+  freeform_tags  = var.freeform_tags
   gateway_id     = var.gateway_id
   path_prefix    = var.path_prefix
   specification {
@@ -121,88 +124,147 @@ resource "oci_apigateway_deployment" "this" {
 		type          = a.value.type
 	      }
 	    }
-	    # body_validation {
-	    #   content {
-	    #     media_type      = var.deployment_specification_routes_request_policies_body_validation_content_media_type
-	    #     validation_type = var.deployment_specification_routes_request_policies_body_validation_content_validation_type
-	    #   }
-
-	    #   required        = var.deployment_specification_routes_request_policies_body_validation_required
-	    #   validation_mode = var.deployment_specification_routes_request_policies_body_validation_validation_mode
-	    # }
-	    # cors {
-	    #   allowed_origins              = var.deployment_specification_routes_request_policies_cors_allowed_origins
-	    #   allowed_headers              = var.deployment_specification_routes_request_policies_cors_allowed_headers
-	    #   allowed_methods              = var.deployment_specification_routes_request_policies_cors_allowed_methods
-	    #   exposed_headers              = var.deployment_specification_routes_request_policies_cors_exposed_headers
-	    #   is_allow_credentials_enabled = var.deployment_specification_routes_request_policies_cors_is_allow_credentials_enabled
-	    #   max_age_in_seconds           = var.deployment_specification_routes_request_policies_cors_max_age_in_seconds
-	    # }
-
-	    # header_transformations {
-	    #   filter_headers {
-	    #     items {
-	    #	name = var.deployment_specification_routes_request_policies_header_transformations_filter_headers_items_name
-	    #     }
-	    #     type = var.deployment_specification_routes_request_policies_header_transformations_filter_headers_type
-	    #   }
-	    #   rename_headers {
-	    #     items {
-	    #	from = var.deployment_specification_routes_request_policies_header_transformations_rename_headers_items_from
-	    #	to   = var.deployment_specification_routes_request_policies_header_transformations_rename_headers_items_to
-	    #     }
-	    #   }
-	    #   set_headers {
-	    #     items {
-	    #	name      = var.deployment_specification_routes_request_policies_header_transformations_set_headers_items_name
-	    #	values    = var.deployment_specification_routes_request_policies_header_transformations_set_headers_items_values
-	    #	if_exists = var.deployment_specification_routes_request_policies_header_transformations_set_headers_items_if_exists
-	    #     }
-	    #   }
-	    # }
-	    # header_validations {
-	    #   headers {
-	    #     name     = var.deployment_specification_routes_request_policies_header_validations_headers_name
-	    #     required = var.deployment_specification_routes_request_policies_header_validations_headers_required
-	    #   }
-	    #   validation_mode = var.deployment_specification_routes_request_policies_header_validations_validation_mode
-	    # }
-	    # query_parameter_transformations {
-	    #   filter_query_parameters {
-	    #     items {
-	    #	name = var.deployment_specification_routes_request_policies_query_parameter_transformations_filter_query_parameters_items_name
-	    #     }
-	    #     type = var.deployment_specification_routes_request_policies_query_parameter_transformations_filter_query_parameters_type
-	    #   }
-	    #   rename_query_parameters {
-	    #     items {
-	    #	from = var.deployment_specification_routes_request_policies_query_parameter_transformations_rename_query_parameters_items_from
-	    #	to   = var.deployment_specification_routes_request_policies_query_parameter_transformations_rename_query_parameters_items_to
-	    #     }
-	    #   }
-	    #   set_query_parameters {
-	    #     items {
-	    #	name      = var.deployment_specification_routes_request_policies_query_parameter_transformations_set_query_parameters_items_name
-	    #	values    = var.deployment_specification_routes_request_policies_query_parameter_transformations_set_query_parameters_items_values
-	    #	if_exists = var.deployment_specification_routes_request_policies_query_parameter_transformations_set_query_parameters_items_if_exists
-	    #     }
-	    #   }
-	    # }
-	    # query_parameter_validations {
-	    #   parameters {
-	    #     name     = var.deployment_specification_routes_request_policies_query_parameter_validations_parameters_name
-	    #     required = var.deployment_specification_routes_request_policies_query_parameter_validations_parameters_required
-	    #   }
-	    #   validation_mode = var.deployment_specification_routes_request_policies_query_parameter_validations_validation_mode
-	    # }
-	    # response_cache_lookup {
-	    #   type                       = var.deployment_specification_routes_request_policies_response_cache_lookup_type
-	    #   cache_key_additions        = var.deployment_specification_routes_request_policies_response_cache_lookup_cache_key_additions
-	    #   is_enabled                 = var.deployment_specification_routes_request_policies_response_cache_lookup_is_enabled
-	    #   is_private_caching_enabled = var.deployment_specification_routes_request_policies_response_cache_lookup_is_private_caching_enabled
-	    # }
+	    dynamic "body_validation" {
+	      for_each = rp.value.body_validation[*]
+	      iterator = bv
+	      content {
+		dynamic "content" {
+		  for_each = bv.value.content[*]
+		  iterator = c
+		  content {
+		    media_type      = c.value.media_type
+		    validation_type = c.valuevalidation_type
+		  }
+		}
+		required        = bv.value.required
+		validation_mode = bv.valuevalidation_mode
+	      }
+	    }
+	    dynamic "cors" {
+	      for_each = rp.value.cors[*]
+	      iterator = c
+	      content {
+		allowed_origins              = c.value.allowed_origins
+		allowed_headers              = c.value.allowed_headers
+		allowed_methods              = c.value.allowed_methods
+		exposed_headers              = c.value.exposed_headers
+		is_allow_credentials_enabled = c.value.is_allow_credentials_enabled
+		max_age_in_seconds           = c.value.max_age_in_seconds
+	      }
+	    }
+	    dynamic "header_transformations" {
+	      for_each = rp.value.header_transformations[*]
+	      iterator = ht
+	      content {
+		dynamic "filter_headers" {
+		  for_each = ht.value.filter_headers[*]
+		  iterator = fh
+		  content {
+		    items {
+		      name = fh.value.name
+		    }
+		    type = fh.value.type
+		  }
+		}
+		dynamic "rename_headers" {
+		  for_each = ht.value.rename_headers[*]
+		  iterator = rh
+		  content {
+		    items {
+		      from = rh.value.from
+		      to   = rh.value.to
+		    }
+		  }
+		}
+		dynamic "set_headers" {
+		  for_each = ht.value.set_headers[*]
+		  iterator = sh
+		  content {
+		    items {
+		      name      = sh.value.name
+		      values    = sh.value.values
+		      if_exists = sh.value.if_exists
+		    }
+		  }
+		}
+	      }
+	    }
+	    dynamic "header_validations" {
+	      for_each = rp.value.header_validations[*]
+	      iterator = hv
+	      content {
+		dynamic "headers" {
+		  for_each = hv.value.headers[*]
+		  iterator = h
+		  content {
+		    name     = h.value.name
+		    required = h.value.required
+		  }
+		}
+		validation_mode = hv.value.validation_mode
+	      }
+	    }
+	    dynamic "query_parameter_transformations" {
+	      for_each = rp.value.query_parameter_transformations[*]
+	      iterator = qpt
+	      content {
+		dynamic "filter_query_parameters" {
+		  for_each = qpt.value.filter_query_parameters
+		  iterator = fqp
+		  content {
+		    items {
+		      name = fqp.name
+		    }
+		    type = qpt.type
+		  }
+		}
+		dynamic "rename_query_parameters" {
+		  for_each = qpt.value.rename_query_parameters[*]
+		  iterator = rqp
+		  content {
+		    items {
+		      from = rqp.value.from
+		      to   = rqp.value.to
+		    }
+		  }
+		}
+		dynamic "set_query_parameters" {
+		  for_each = qpt.value.set_query_parameters[*]
+		  iterator = sqp
+		  content {
+		    items {
+		      name      = sqp.value.name
+		      values    = sqp.value.values
+		      if_exists = sqp.value.if_exists
+		    }
+		  }
+		}
+	      }
+	    }
+	    dynamic "query_parameter_validations" {
+	      for_each = rp.value.query_parameter_validations[*]
+	      iterator = qpv
+	      content {
+		parameters {
+		  name     = qpv.value.name
+		  required = qpv.value.required
+		}
+		validation_mode = qpv.value.validation_mode
+	      }
+	    }
+	    dynamic "response_cache_lookup" {
+	      for_each = rp.value.response_cache_lookup[*]
+	      iterator = rcl
+	      content {
+		type                       = rcl.value.type
+		cache_key_additions        = rcl.value.cache_key_additions
+		is_enabled                 = rcl.value.is_enabled
+		is_private_caching_enabled = rcl.value.is_private_caching_enabled
+	      }
+	    }
 	  }
 	}
+
 	dynamic "response_policies" {
 	  for_each = r.value.response_policies[*]
 	  iterator = rp
@@ -254,10 +316,8 @@ resource "oci_apigateway_deployment" "this" {
 	    }
 	  }
 	}
+
       }
     }
   }
-  defined_tags  = var.defined_tags
-  display_name  = var.display_name
-  freeform_tags = var.freeform_tags
 }
