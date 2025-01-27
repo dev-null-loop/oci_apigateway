@@ -27,7 +27,384 @@ resource "oci_apigateway_deployment" "this" {
         }
       }
     }
+    request_policies {
+      dynamic "authentication" {
+        for_each = var.authentication[*]
+        iterator = a
+        content {
+          type                        = a.value.type
+          audiences                   = a.value.audiences
+          cache_key                   = a.value.cache_key
+          function_id                 = a.value.function_id
+          is_anonymous_access_allowed = a.value.is_anonymous_access_allowed
+          issuers                     = a.value.issuers
+          max_clock_skew_in_seconds   = a.value.max_clock_skew_in_seconds
+          parameters                  = a.value.parameters
+          dynamic "public_keys" {
+            for_each = a.value.public_keys
+            iterator = pk
+            content {
+              type                   = pk.value.type
+              is_ssl_verify_disabled = pk.value.is_ssl_verify_disabled
+              keys {
+                format  = pk.value.format
+                alg     = pk.value.alg
+                e       = pk.value.e
+                key     = pk.value.key
+                key_ops = pk.value.key_ops
+                kid     = pk.value.kid
+                kty     = pk.value.kty
+                n       = pk.value.n
+                use     = pk.value.use
+              }
+              max_cache_duration_in_hours = pk.value.max_cache_duration_in_hours
+              uri                         = pk.value.uri
+            }
+          }
+          token_auth_scheme = a.value.token_auth_scheme
+          token_header      = a.value.token_header
+          token_query_param = a.value.token_query_param
+          #	validation_failure_policy {
+          #	  #Required
+          #	  type = var.deployment_specification_request_policies_authentication_validation_failure_policy_type
 
+          #	  #Optional
+          #	  client_details {
+          #	    #Required
+          #	    type = var.deployment_specification_request_policies_authentication_validation_failure_policy_client_details_type
+
+          #	    #Optional
+          #	    client_id                    = oci_apigateway_client.test_client.id
+          #	    client_secret_id             = oci_vault_secret.test_secret.id
+          #	    client_secret_version_number = var.deployment_specification_request_policies_authentication_validation_failure_policy_client_details_client_secret_version_number
+          #	  }
+          #	  fallback_redirect_path       = var.deployment_specification_request_policies_authentication_validation_failure_policy_fallback_redirect_path
+          #	  logout_path                  = var.deployment_specification_request_policies_authentication_validation_failure_policy_logout_path
+          #	  max_expiry_duration_in_hours = var.deployment_specification_request_policies_authentication_validation_failure_policy_max_expiry_duration_in_hours
+          #	  response_code                = var.deployment_specification_request_policies_authentication_validation_failure_policy_response_code
+          #	  response_header_transformations {
+
+          #	    #Optional
+          #	    filter_headers {
+
+          #	      #Optional
+          #	      items {
+
+          #		#Optional
+          #		name = var.deployment_specification_request_policies_authentication_validation_failure_policy_response_header_transformations_filter_headers_items_name
+          #	      }
+          #	      type = var.deployment_specification_request_policies_authentication_validation_failure_policy_response_header_transformations_filter_headers_type
+          #	    }
+          #	    rename_headers {
+
+          #	      #Optional
+          #	      items {
+
+          #		#Optional
+          #		from = var.deployment_specification_request_policies_authentication_validation_failure_policy_response_header_transformations_rename_headers_items_from
+          #		to   = var.deployment_specification_request_policies_authentication_validation_failure_policy_response_header_transformations_rename_headers_items_to
+          #	      }
+          #	    }
+          #	    set_headers {
+
+          #	      #Optional
+          #	      items {
+
+          #		#Optional
+          #		if_exists = var.deployment_specification_request_policies_authentication_validation_failure_policy_response_header_transformations_set_headers_items_if_exists
+          #		name      = var.deployment_specification_request_policies_authentication_validation_failure_policy_response_header_transformations_set_headers_items_name
+          #		values    = var.deployment_specification_request_policies_authentication_validation_failure_policy_response_header_transformations_set_headers_items_values
+          #	      }
+          #	    }
+          #	  }
+          #	  response_message = var.deployment_specification_request_policies_authentication_validation_failure_policy_response_message
+          #	  response_type    = var.deployment_specification_request_policies_authentication_validation_failure_policy_response_type
+          #	  scopes           = var.deployment_specification_request_policies_authentication_validation_failure_policy_scopes
+          #	  source_uri_details {
+          #	    #Required
+          #	    type = var.deployment_specification_request_policies_authentication_validation_failure_policy_source_uri_details_type
+
+          #	    #Optional
+          #	    uri = var.deployment_specification_request_policies_authentication_validation_failure_policy_source_uri_details_uri
+          #	  }
+          #	  use_cookies_for_intermediate_steps = var.deployment_specification_request_policies_authentication_validation_failure_policy_use_cookies_for_intermediate_steps
+          #	  use_cookies_for_session            = var.deployment_specification_request_policies_authentication_validation_failure_policy_use_cookies_for_session
+          #	  use_pkce                           = var.deployment_specification_request_policies_authentication_validation_failure_policy_use_pkce
+          #	}
+          #	validation_policy {
+          #	  #Required
+          #	  type = var.deployment_specification_request_policies_authentication_validation_policy_type
+
+          #	  #Optional
+          #	  additional_validation_policy {
+
+          #	    #Optional
+          #	    audiences = var.deployment_specification_request_policies_authentication_validation_policy_additional_validation_policy_audiences
+          #	    issuers   = var.deployment_specification_request_policies_authentication_validation_policy_additional_validation_policy_issuers
+          #	    verify_claims {
+
+          #	      #Optional
+          #	      is_required = var.deployment_specification_request_policies_authentication_validation_policy_additional_validation_policy_verify_claims_is_required
+          #	      key         = var.deployment_specification_request_policies_authentication_validation_policy_additional_validation_policy_verify_claims_key
+          #	      values      = var.deployment_specification_request_policies_authentication_validation_policy_additional_validation_policy_verify_claims_values
+          #	    }
+          #	  }
+          #	  client_details {
+          #	    #Required
+          #	    type = var.deployment_specification_request_policies_authentication_validation_policy_client_details_type
+
+          #	    #Optional
+          #	    client_id                    = oci_apigateway_client.test_client.id
+          #	    client_secret_id             = oci_vault_secret.test_secret.id
+          #	    client_secret_version_number = var.deployment_specification_request_policies_authentication_validation_policy_client_details_client_secret_version_number
+          #	  }
+          #	  is_ssl_verify_disabled = var.deployment_specification_request_policies_authentication_validation_policy_is_ssl_verify_disabled
+          #	  keys {
+          #	    #Required
+          #	    format = var.deployment_specification_request_policies_authentication_validation_policy_keys_format
+
+          #	    #Optional
+          #	    alg     = var.deployment_specification_request_policies_authentication_validation_policy_keys_alg
+          #	    e       = var.deployment_specification_request_policies_authentication_validation_policy_keys_e
+          #	    key     = var.deployment_specification_request_policies_authentication_validation_policy_keys_key
+          #	    key_ops = var.deployment_specification_request_policies_authentication_validation_policy_keys_key_ops
+          #	    kid     = var.deployment_specification_request_policies_authentication_validation_policy_keys_kid
+          #	    kty     = var.deployment_specification_request_policies_authentication_validation_policy_keys_kty
+          #	    n       = var.deployment_specification_request_policies_authentication_validation_policy_keys_n
+          #	    use     = var.deployment_specification_request_policies_authentication_validation_policy_keys_use
+          #	  }
+          #	  max_cache_duration_in_hours = var.deployment_specification_request_policies_authentication_validation_policy_max_cache_duration_in_hours
+          #	  source_uri_details {
+          #	    #Required
+          #	    type = var.deployment_specification_request_policies_authentication_validation_policy_source_uri_details_type
+
+          #	    #Optional
+          #	    uri = var.deployment_specification_request_policies_authentication_validation_policy_source_uri_details_uri
+          #	  }
+          #	  uri = var.deployment_specification_request_policies_authentication_validation_policy_uri
+          #	}
+          #	verify_claims {
+
+          #	  #Optional
+          #	  is_required = var.deployment_specification_request_policies_authentication_verify_claims_is_required
+          #	  key         = var.deployment_specification_request_policies_authentication_verify_claims_key
+          #	  values      = var.deployment_specification_request_policies_authentication_verify_claims_values
+          #	}
+          # }
+          # cors {
+          #	#Required
+          #	allowed_origins = var.deployment_specification_request_policies_cors_allowed_origins
+
+          #	#Optional
+          #	allowed_headers              = var.deployment_specification_request_policies_cors_allowed_headers
+          #	allowed_methods              = var.deployment_specification_request_policies_cors_allowed_methods
+          #	exposed_headers              = var.deployment_specification_request_policies_cors_exposed_headers
+          #	is_allow_credentials_enabled = var.deployment_specification_request_policies_cors_is_allow_credentials_enabled
+          #	max_age_in_seconds           = var.deployment_specification_request_policies_cors_max_age_in_seconds
+          # }
+          # dynamic_authentication {
+          #	#Required
+          #	authentication_servers {
+          #	  #Required
+          #	  authentication_server_detail {
+          #	    #Required
+          #	    type = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_type
+
+          #	    #Optional
+          #	    audiences                   = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_audiences
+          #	    function_id                 = oci_functions_function.test_function.id
+          #	    is_anonymous_access_allowed = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_is_anonymous_access_allowed
+          #	    issuers                     = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_issuers
+          #	    max_clock_skew_in_seconds   = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_max_clock_skew_in_seconds
+          #	    public_keys {
+          #	      #Required
+          #	      type = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_public_keys_type
+
+          #	      #Optional
+          #	      is_ssl_verify_disabled = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_public_keys_is_ssl_verify_disabled
+          #	      keys {
+          #		#Required
+          #		format = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_public_keys_keys_format
+
+          #		#Optional
+          #		alg     = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_public_keys_keys_alg
+          #		e       = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_public_keys_keys_e
+          #		key     = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_public_keys_keys_key
+          #		key_ops = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_public_keys_keys_key_ops
+          #		kid     = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_public_keys_keys_kid
+          #		kty     = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_public_keys_keys_kty
+          #		n       = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_public_keys_keys_n
+          #		use     = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_public_keys_keys_use
+          #	      }
+          #	      max_cache_duration_in_hours = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_public_keys_max_cache_duration_in_hours
+          #	      uri                         = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_public_keys_uri
+          #	    }
+          #	    token_auth_scheme = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_token_auth_scheme
+          #	    token_header      = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_token_header
+          #	    token_query_param = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_token_query_param
+          #	    validation_failure_policy {
+          #	      #Required
+          #	      type = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_failure_policy_type
+
+          #	      #Optional
+          #	      client_details {
+          #		#Required
+          #		type = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_failure_policy_client_details_type
+
+          #		#Optional
+          #		client_id                    = oci_apigateway_client.test_client.id
+          #		client_secret_id             = oci_vault_secret.test_secret.id
+          #		client_secret_version_number = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_failure_policy_client_details_client_secret_version_number
+          #	      }
+          #	      fallback_redirect_path       = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_failure_policy_fallback_redirect_path
+          #	      logout_path                  = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_failure_policy_logout_path
+          #	      max_expiry_duration_in_hours = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_failure_policy_max_expiry_duration_in_hours
+          #	      response_code                = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_failure_policy_response_code
+          #	      response_header_transformations {
+
+          #		#Optional
+          #		filter_headers {
+
+          #		  #Optional
+          #		  items {
+
+          #		    #Optional
+          #		    name = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_failure_policy_response_header_transformations_filter_headers_items_name
+          #		  }
+          #		  type = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_failure_policy_response_header_transformations_filter_headers_type
+          #		}
+          #		rename_headers {
+
+          #		  #Optional
+          #		  items {
+
+          #		    #Optional
+          #		    from = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_failure_policy_response_header_transformations_rename_headers_items_from
+          #		    to   = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_failure_policy_response_header_transformations_rename_headers_items_to
+          #		  }
+          #		}
+          #		set_headers {
+
+          #		  #Optional
+          #		  items {
+
+          #		    #Optional
+          #		    if_exists = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_failure_policy_response_header_transformations_set_headers_items_if_exists
+          #		    name      = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_failure_policy_response_header_transformations_set_headers_items_name
+          #		    values    = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_failure_policy_response_header_transformations_set_headers_items_values
+          #		  }
+          #		}
+          #	      }
+          #	      response_message = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_failure_policy_response_message
+          #	      response_type    = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_failure_policy_response_type
+          #	      scopes           = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_failure_policy_scopes
+          #	      source_uri_details {
+          #		#Required
+          #		type = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_failure_policy_source_uri_details_type
+
+          #		#Optional
+          #		uri = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_failure_policy_source_uri_details_uri
+          #	      }
+          #	      use_cookies_for_intermediate_steps = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_failure_policy_use_cookies_for_intermediate_steps
+          #	      use_cookies_for_session            = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_failure_policy_use_cookies_for_session
+          #	      use_pkce                           = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_failure_policy_use_pkce
+          #	    }
+          #	    validation_policy {
+          #	      #Required
+          #	      type = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_policy_type
+
+          #	      #Optional
+          #	      additional_validation_policy {
+
+          #		#Optional
+          #		audiences = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_policy_additional_validation_policy_audiences
+          #		issuers   = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_policy_additional_validation_policy_issuers
+          #		verify_claims {
+
+          #		  #Optional
+          #		  is_required = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_policy_additional_validation_policy_verify_claims_is_required
+          #		  key         = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_policy_additional_validation_policy_verify_claims_key
+          #		  values      = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_policy_additional_validation_policy_verify_claims_values
+          #		}
+          #	      }
+          #	      client_details {
+          #		#Required
+          #		type = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_policy_client_details_type
+
+          #		#Optional
+          #		client_id                    = oci_apigateway_client.test_client.id
+          #		client_secret_id             = oci_vault_secret.test_secret.id
+          #		client_secret_version_number = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_policy_client_details_client_secret_version_number
+          #	      }
+          #	      is_ssl_verify_disabled = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_policy_is_ssl_verify_disabled
+          #	      keys {
+          #		#Required
+          #		format = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_policy_keys_format
+
+          #		#Optional
+          #		alg     = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_policy_keys_alg
+          #		e       = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_policy_keys_e
+          #		key     = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_policy_keys_key
+          #		key_ops = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_policy_keys_key_ops
+          #		kid     = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_policy_keys_kid
+          #		kty     = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_policy_keys_kty
+          #		n       = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_policy_keys_n
+          #		use     = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_policy_keys_use
+          #	      }
+          #	      max_cache_duration_in_hours = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_policy_max_cache_duration_in_hours
+          #	      source_uri_details {
+          #		#Required
+          #		type = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_policy_source_uri_details_type
+
+          #		#Optional
+          #		uri = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_policy_source_uri_details_uri
+          #	      }
+          #	      uri = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_validation_policy_uri
+          #	    }
+          #	    verify_claims {
+
+          #	      #Optional
+          #	      is_required = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_verify_claims_is_required
+          #	      key         = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_verify_claims_key
+          #	      values      = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_authentication_server_detail_verify_claims_values
+          #	    }
+          #	  }
+          #	  key {
+          #	    #Required
+          #	    name = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_key_name
+
+          #	    #Optional
+          #	    expression = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_key_expression
+          #	    is_default = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_key_is_default
+          #	    type       = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_key_type
+          #	    values     = var.deployment_specification_request_policies_dynamic_authentication_authentication_servers_key_values
+          #	  }
+          #	}
+          #	selection_source {
+          #	  #Required
+          #	  selector = var.deployment_specification_request_policies_dynamic_authentication_selection_source_selector
+          #	  type     = var.deployment_specification_request_policies_dynamic_authentication_selection_source_type
+          #	}
+          # }
+          # mutual_tls {
+
+          #	#Optional
+          #	allowed_sans                     = var.deployment_specification_request_policies_mutual_tls_allowed_sans
+          #	is_verified_certificate_required = var.deployment_specification_request_policies_mutual_tls_is_verified_certificate_required
+          # }
+          # rate_limiting {
+          #	#Required
+          #	rate_in_requests_per_second = var.deployment_specification_request_policies_rate_limiting_rate_in_requests_per_second
+          #	rate_key                    = var.deployment_specification_request_policies_rate_limiting_rate_key
+          # }
+          # usage_plans {
+          #	#Required
+          #	token_locations = var.deployment_specification_request_policies_usage_plans_token_locations
+          # }
+
+        }
+      }
+    }
     dynamic "routes" {
       for_each = var.routes != null ? var.routes : []
       iterator = r

@@ -216,3 +216,34 @@ variable "routes" {
     }))
   }))
 }
+
+variable "authentication" {
+  description = "(Optional) (Updatable) Information on how to authenticate incoming requests."
+  type = object({
+    type                        = string
+    audiences                   = list(string)
+    cache_key                   = optional(list(string))
+    function_id                 = optional(string)
+    is_anonymous_access_allowed = string
+    issuers                     = optional(list(string))
+    max_clock_skew_in_seconds   = optional(number)
+    parameters                  = optional(map(string))
+    token_auth_scheme           = string
+    token_header                = string
+    public_keys = list(object({
+      type                        = string
+      is_ssl_verify_disabled      = optional(string)
+      format                      = string
+      alg                         = optional(string)
+      e                           = optional(string)
+      key                         = optional(string)
+      key_ops                     = optional(list(string))
+      kid                         = optional(string)
+      kty                         = optional(string)
+      n                           = optional(string)
+      use                         = optional(string)
+      max_cache_duration_in_hours = string
+      uri                         = string
+    }))
+  })
+}
