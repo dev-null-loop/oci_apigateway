@@ -693,7 +693,6 @@ resource "oci_apigateway_deployment" "this" {
             }
           }
         }
-
       }
     }
   }

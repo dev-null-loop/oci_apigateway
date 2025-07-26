@@ -32,7 +32,7 @@ variable "path_prefix" {
 }
 
 variable "logging_policies" {
-  description = "Policies controlling the pushing of logs to Oracle Cloud Infrastructure Public Logging."
+  description = "(Optional) Policies controlling the pushing of logs to Oracle Cloud Infrastructure Public Logging."
   type = object({
     access_log = optional(object({
       is_enabled = optional(bool)
@@ -42,6 +42,7 @@ variable "logging_policies" {
       log_level  = optional(string)
     }))
   })
+  default = {}
 }
 
 variable "routes" {
