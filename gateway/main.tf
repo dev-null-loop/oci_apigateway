@@ -4,17 +4,41 @@ resource "oci_apigateway_gateway" "this" {
   subnet_id      = var.subnet_id
   certificate_id = var.certificate_id
   dynamic "ca_bundles" {
-    for_each = var.ca_bundles[*]
-    iterator = cab
+    for_each = var.ca_bundles != null ? var.ca_bundles : []
+    iterator = cb
     content {
-      type                     = cab.value.type
-      ca_bundle_id             = cab.value.ca_bundle_id
-      certificate_authority_id = cab.value.certificate_authority_id
+      type                     = cb.value.type
+      ca_bundle_id             = cb.value.ca_bundle_id
+      certificate_authority_id = cb.value.certificate_authority_id
     }
   }
-  defined_tags               = var.defined_tags
-  display_name               = var.display_name
-  freeform_tags              = var.freeform_tags
+  defined_tags  = var.defined_tags
+  display_name  = var.display_name
+  freeform_tags = var.freeform_tags
+  ip_mode       = var.ip_mode
+  dynamic "ipv4address_configuration" {
+    for_each = var.ipv4address_configuration[*]
+    iterator = ic
+    content {
+      reserved_ip_ids = ic.value.reserved_ip_ids
+    }
+  }
+  dynamic "ipv6address_configuration" {
+    for_each = var.ipv6address_configuration[*]
+    iterator = ic
+    content {
+      addresses    = ic.value.addresses
+      subnet_cidrs = ic.value.subnet_cidrs
+    }
+  }
+  dynamic "locks" {
+    for_each = var.locks != null ? var.locks : []
+    iterator = lo
+    content {
+      type    = lo.value.type
+      message = lo.value.message
+    }
+  }
   network_security_group_ids = var.network_security_group_ids
   dynamic "response_cache_details" {
     for_each = var.response_cache_details[*]
@@ -28,9 +52,13 @@ resource "oci_apigateway_gateway" "this" {
       is_ssl_verify_disabled               = rcd.value.is_ssl_verify_disabled
       read_timeout_in_ms                   = rcd.value.read_timeout_in_ms
       send_timeout_in_ms                   = rcd.value.send_timeout_in_ms
-      servers {
-        host = rcd.value.servers.host
-        port = rcd.value.servers.port
+      dynamic "servers" {
+        for_each = rcd.value.servers != null ? rcd.value.servers : []
+        iterator = se
+        content {
+          host = se.value.host
+          port = se.value.port
+        }
       }
     }
   }
