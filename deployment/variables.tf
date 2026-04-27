@@ -43,8 +43,114 @@ variable "path_prefix" {
 variable "specification" {
   description = "(Required) (Updatable) The logical configuration of the API exposed by a deployment."
   type = object({
-    logging_policies = optional(list(any), [])
-    request_policies = optional(list(any), [])
-    routes           = optional(list(any), [])
+    logging_policies = optional(object({
+      access_log = optional(object({
+        is_enabled = optional(bool)
+      }))
+      execution_log = optional(object({
+        is_enabled = optional(bool)
+        log_level  = optional(string)
+      }))
+    }))
+    request_policies = optional(object({
+      authentication = optional(object({
+        audiences                   = optional(list(string))
+        cache_key                   = optional(list(string))
+        function_id                 = optional(string)
+        is_anonymous_access_allowed = optional(bool)
+        issuers                     = optional(list(string))
+        max_clock_skew_in_seconds   = optional(number)
+        parameters                  = optional(map(string))
+        public_keys = optional(object({
+          is_ssl_verify_disabled      = optional(bool)
+          max_cache_duration_in_hours = optional(number)
+          type                        = string
+          uri                         = optional(string)
+          keys = optional(list(object({
+            alg     = optional(string)
+            e       = optional(string)
+            format  = string
+            key     = optional(string)
+            key_ops = optional(list(string))
+            kid     = optional(string)
+            kty     = optional(string)
+            n       = optional(string)
+            use     = optional(string)
+          })), [])
+        }))
+        token_auth_scheme = optional(string)
+        token_header      = optional(string)
+        token_query_param = optional(string)
+        type              = string
+        validation_failure_policy = optional(object({
+          fallback_redirect_path             = optional(string)
+          logout_path                        = optional(string)
+          max_expiry_duration_in_hours       = optional(number)
+          response_code                      = optional(string)
+          response_message                   = optional(string)
+          response_type                      = optional(string)
+          scopes                             = optional(list(string))
+          type                               = string
+          use_cookies_for_intermediate_steps = optional(bool)
+          use_cookies_for_session            = optional(bool)
+          use_pkce                           = optional(bool)
+          client_details = optional(object({
+            client_id                    = optional(string)
+            client_secret_id             = optional(string)
+            client_secret_version_number = optional(number)
+            type                         = string
+          }))
+        }))
+        validation_policy = optional(object({
+          is_ssl_verify_disabled      = optional(bool)
+          max_cache_duration_in_hours = optional(number)
+          type                        = string
+          uri                         = optional(string)
+        }))
+        verify_claims = optional(list(object({
+          is_required = optional(bool)
+          key         = string
+          values      = optional(list(string))
+        })), [])
+      }))
+      cors = optional(object({
+        allowed_headers              = optional(list(string))
+        allowed_methods              = optional(list(string))
+        allowed_origins              = list(string)
+        exposed_headers              = optional(list(string))
+        is_allow_credentials_enabled = optional(bool)
+        max_age_in_seconds           = optional(number)
+      }))
+      mutual_tls = optional(object({
+        allowed_sans                     = optional(list(string))
+        is_verified_certificate_required = optional(bool)
+      }))
+      rate_limiting = optional(object({
+        rate_in_requests_per_second = number
+        rate_key                    = string
+      }))
+      usage_plans = optional(object({
+        token_locations = list(string)
+      }))
+    }))
+    routes = optional(list(object({
+      methods = optional(list(string))
+      path    = string
+      backend = object({
+        type                       = string
+        url                        = optional(string)
+        function_id                = optional(string)
+        body                       = optional(string)
+        status                     = optional(number)
+        connect_timeout_in_seconds = optional(number)
+        read_timeout_in_seconds    = optional(number)
+        send_timeout_in_seconds    = optional(number)
+        is_ssl_verify_disabled     = optional(bool)
+        headers = optional(list(object({
+          name  = string
+          value = string
+        })), [])
+      })
+    })), [])
   })
 }
